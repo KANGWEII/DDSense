@@ -1,0 +1,12 @@
+[submodule "third_party/fast-dds/foonathan_memory_vendor"]
+	path = third_party/fast-dds/foonathan_memory_vendor
+	url = git@github.com:eProsima/foonathan_memory_vendor.git
+[submodule "third_party/fast-dds/Fast-CDR"]
+	path = third_party/fast-dds/Fast-CDR
+	url = git@github.com:eProsima/Fast-CDR.git
+[submodule "third_party/fast-dds/Fast-DDS"]
+	path = third_party/fast-dds/Fast-DDS
+	url = git@github.com:eProsima/Fast-DDS.git
+[submodule "third_party/fast-dds/Fast-DDS-Gen"]
+	path = third_party/fast-dds/Fast-DDS-Gen
+	url = git@github.com:eProsima/Fast-DDS-Gen.git
