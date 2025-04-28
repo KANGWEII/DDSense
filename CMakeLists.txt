@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.10)
-project(Project VERSION 0.1.0
-                DESCRIPTION "Project description"
+project(DDSense VERSION 0.1.0
+                DESCRIPTION "DDS-based Sensor Data Pipeline"
                 LANGUAGES CXX)
 
 find_program(CCACHE_PROGRAM ccache)
@@ -48,20 +48,16 @@ else ()
   message(STATUS "Tests will not be built")
 endif ()
 
-find_package(Threads REQUIRED)
+add_subdirectory(third_party)
 
-# add_subdirectory(third_party)
+file(GLOB DDS_HELLOWORLD_SOURCES_CXX "src/*.cxx")
 
 ## Add libraries
-add_executable(project-template
-    src/main.cpp
-    src/project_class.cpp)
-target_link_libraries(project-template PRIVATE 
-    Threads::Threads)
-target_include_directories(project-template PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include>
-    PRIVATE src)
+add_executable(DDSHelloWorldPublisher src/HelloWorldPublisher.cpp ${DDS_HELLOWORLD_SOURCES_CXX})
+target_link_libraries(DDSHelloWorldPublisher fastdds fastcdr)
+
+add_executable(DDSHelloWorldSubscriber src/HelloWorldSubscriber.cpp ${DDS_HELLOWORLD_SOURCES_CXX})
+target_link_libraries(DDSHelloWorldSubscriber fastdds fastcdr)
 
 if (BUILD_TESTS)
   add_subdirectory(test)
