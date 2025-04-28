@@ -12,6 +12,7 @@ endif ()
 ## Project Options
 option(BUILD_TESTING "Build tests" OFF)
 option(ENABLE_LOGGING "Enable logging module" ON)
+option(FAST_DDS_SAMPLE "Build Fast DDS HelloWorld sample" OFF)
 
 ## Set compiler to use c++ 17 features
 set(CMAKE_CXX_STANDARD 17)
@@ -50,14 +51,8 @@ endif ()
 
 add_subdirectory(third_party)
 
-file(GLOB DDS_HELLOWORLD_SOURCES_CXX "src/*.cxx")
-
 ## Add libraries
-add_executable(DDSHelloWorldPublisher src/HelloWorldPublisher.cpp ${DDS_HELLOWORLD_SOURCES_CXX})
-target_link_libraries(DDSHelloWorldPublisher fastdds fastcdr)
 
-add_executable(DDSHelloWorldSubscriber src/HelloWorldSubscriber.cpp ${DDS_HELLOWORLD_SOURCES_CXX})
-target_link_libraries(DDSHelloWorldSubscriber fastdds fastcdr)
 
 if (BUILD_TESTS)
   add_subdirectory(test)
