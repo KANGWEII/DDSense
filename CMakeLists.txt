@@ -12,6 +12,10 @@ endif ()
 ## Project Options
 option(BUILD_TESTING "Build tests" OFF)
 option(ENABLE_LOGGING "Enable logging module" ON)
+
+# Fast DDS
+option(BUILD_FAST_DEPENDENCIES "Build Fast DDS dependencies" OFF)
+option(BUILD_FAST_DDS "Build Fast DDS" OFF)
 option(FAST_DDS_SAMPLE "Build Fast DDS HelloWorld sample" OFF)
 
 ## Set compiler to use c++ 17 features
@@ -52,7 +56,13 @@ endif ()
 add_subdirectory(third_party)
 
 ## Add libraries
-
+add_executable(main
+    src/main.cpp
+    src/project_class.cpp)
+target_include_directories(main PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+    PRIVATE src)
 
 if (BUILD_TESTS)
   add_subdirectory(test)

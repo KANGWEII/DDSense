@@ -30,8 +30,20 @@ jobs:
             sudo apt-get update
             sudo apt-get install -y build-essential cmake g++ python3-pip wget git libasio-dev libtinyxml2-dev libssl-dev libp11-dev softhsm2 libengine-pkcs11-openssl
 
-      - name: Build library
+      - name: Build Fast DDS dependencies
         run: |
             mkdir build && cd build 
-            cmake .. 
+            cmake -DBUILD_FAST_DEPENDENCIES=ON ..
+            make -j install
+
+      - name: Build Fast DDS
+        run: |
+            cd build
+            cmake -DBUILD_FAST_DDS=ON ..
+            make -j install
+
+      - name: Build Fast DDS Sample
+        run: |
+            cd build
+            cmake -DBUILD_FAST_DDS_SAMPLE=ON ..
             make -j
