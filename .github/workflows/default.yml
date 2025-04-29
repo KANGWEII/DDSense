@@ -34,13 +34,13 @@ jobs:
         run: |
             mkdir build && cd build 
             cmake -DBUILD_FAST_DEPENDENCIES=ON ..
-            make -j install
+            sudo make install
 
       - name: Build Fast DDS
         run: |
             cd build
             cmake -DBUILD_FAST_DDS=ON ..
-            make -j install
+            sudo make install
 
       - name: Build Fast DDS Sample
         run: |
