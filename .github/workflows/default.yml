@@ -45,5 +45,5 @@ jobs:
       - name: Build Fast DDS Sample
         run: |
             cd build
-            cmake -DBUILD_FAST_DDS_SAMPLE=ON ..
+            cmake -DFAST_DDS_SAMPLE=ON ..
             make -j
