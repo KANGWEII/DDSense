@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.10)
-project(Project VERSION 0.1.0
-                DESCRIPTION "Project description"
+project(DDSense VERSION 0.1.0
+                DESCRIPTION "DDS-based Sensor Data Pipeline"
                 LANGUAGES CXX)
 
 find_program(CCACHE_PROGRAM ccache)
@@ -12,6 +12,11 @@ endif ()
 ## Project Options
 option(BUILD_TESTING "Build tests" OFF)
 option(ENABLE_LOGGING "Enable logging module" ON)
+
+# Fast DDS
+option(BUILD_FAST_DEPENDENCIES "Build Fast DDS dependencies" OFF)
+option(BUILD_FAST_DDS "Build Fast DDS" OFF)
+option(FAST_DDS_SAMPLE "Build Fast DDS HelloWorld sample" OFF)
 
 ## Set compiler to use c++ 17 features
 set(CMAKE_CXX_STANDARD 17)
@@ -48,17 +53,13 @@ else ()
   message(STATUS "Tests will not be built")
 endif ()
 
-find_package(Threads REQUIRED)
-
-# add_subdirectory(third_party)
+add_subdirectory(third_party)
 
 ## Add libraries
-add_executable(project-template
+add_executable(main
     src/main.cpp
     src/project_class.cpp)
-target_link_libraries(project-template PRIVATE 
-    Threads::Threads)
-target_include_directories(project-template PUBLIC
+target_include_directories(main PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
     PRIVATE src)

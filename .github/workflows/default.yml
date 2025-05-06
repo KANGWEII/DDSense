@@ -22,12 +22,28 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
       - name: Install apt-get dependencies
         run: |
             sudo apt-get update
-            sudo apt-get install -y build-essential
-      - name: Build library
+            sudo apt-get install -y build-essential cmake g++ python3-pip wget git libasio-dev libtinyxml2-dev libssl-dev libp11-dev softhsm2 libengine-pkcs11-openssl
+
+      - name: Build Fast DDS dependencies
         run: |
             mkdir build && cd build 
-            cmake .. 
+            cmake -DBUILD_FAST_DEPENDENCIES=ON ..
+            sudo make install
+
+      - name: Build Fast DDS
+        run: |
+            cd build
+            cmake -DBUILD_FAST_DDS=ON ..
+            sudo make install
+
+      - name: Build Fast DDS Sample
+        run: |
+            cd build
+            cmake -DFAST_DDS_SAMPLE=ON ..
             make -j
