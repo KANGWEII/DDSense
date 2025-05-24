@@ -39,3 +39,6 @@
 *.exe
 *.out
 *.app
+
+# idl generated files
+generated/idl/
