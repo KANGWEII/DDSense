@@ -59,23 +59,28 @@ bool TemperaturePub::Init() {
   return true;
 }
 
+float TemperaturePub::GenerateTemperature() {
+  return std::round(
+             (kAverageTemp + ((2.0f * rand() / RAND_MAX - 1.0f) * kDeviation)) *
+             10.0f) /
+         10.0f;
+}
+
 bool TemperaturePub::Publish() {
-  temp_.timestamp(temp_.timestamp() + 1);
-  temp_.temperature(temp_.temperature() + 0.1);
+  temp_.timestamp(
+      std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()));
+  temp_.temperature(GenerateTemperature());
   writer_->write(&temp_);
 
   return true;
 }
 
-void TemperaturePub::Run(uint32_t samples) {
-  uint32_t sample_count = 0;
-  while (sample_count < samples) {
-    if (Publish()) {
-      std::cout << "Timestamp: " << temp_.timestamp()
-                << " Temperature: " << temp_.temperature() << std::endl;
-      sample_count++;
-    }
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+void TemperaturePub::Run() {
+  while (Publish()) {
+    std::cout << "Timestamp: " << temp_.timestamp()
+              << ", Temperature: " << temp_.temperature() << std::endl;
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
   }
 }
 
@@ -83,13 +88,14 @@ void TemperaturePub::Run(uint32_t samples) {
 }  // namespace ddsense
 
 int main(int argc, char** argv) {
-  std::cout << "Starting publisher." << std::endl;
-  uint32_t samples = 10;
+  std::cout
+      << "Publishing temperature sensor data to topic 'sensor/temperature'"
+      << std::endl;
 
   ddsense::publisher::TemperaturePub* temp =
       new ddsense::publisher::TemperaturePub();
   if (temp->Init()) {
-    temp->Run(samples);
+    temp->Run();
   }
 
   delete temp;

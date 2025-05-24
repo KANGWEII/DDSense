@@ -23,8 +23,9 @@ class TemperaturePub {
   TemperaturePub();
   virtual ~TemperaturePub();
   bool Init();
+  float GenerateTemperature();
   bool Publish();
-  void Run(uint32_t samples);
+  void Run();
 
  private:
   Temperature temp_;
@@ -33,6 +34,9 @@ class TemperaturePub {
   Topic* topic_;
   DataWriter* writer_;
   TypeSupport type_;
+
+  const float kAverageTemp = 20.0f;
+  const float kDeviation = 0.5f;
 
   class PubListener : public DataWriterListener {
    public:
