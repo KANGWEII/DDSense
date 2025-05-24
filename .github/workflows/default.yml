@@ -52,6 +52,10 @@ jobs:
             cd third_party/fast-dds/Fast-DDS-Gen
             ./gradlew assemble
 
+      - name: Generate data types
+        run: |
+            third_party/fast-dds/Fast-DDS-Gen/scripts/fastddsgen -d generated/ idl/temperature/Temperature.idl
+
       - name: Build Fast DDS Sample
         run: |
             cd build
