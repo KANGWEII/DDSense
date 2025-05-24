@@ -15,6 +15,9 @@ $ sudo apt-get install libssl-dev
 
 # Libp11 and SoftHSM libraries
 $ sudo apt-get install libp11-dev softhsm2 libengine-pkcs11-openssl
+
+# Java JDK
+$ sudo apt-get install openjdk-11-jdk
 ```
 
 ## Getting this repository
@@ -30,7 +33,6 @@ Flags for the CMake compilation:
 |----------------------------|---------|---------------------------------------------|
 | `DBUILD_FAST_DEPENDENCIES` | OFF     | Option to build Fast DDS dependencies       |
 | `DBUILD_FAST_DDS`          | OFF     | Option to build Fast DDS                    |
-| `FAST_DDS_SAMPLE`          | OFF     | Option to build Fast DDS HelloWorld sample  |
 
 ```bash
 $ cd DDSense
@@ -43,4 +45,33 @@ $ sudo make install
 # Build Fast DDS
 $ cmake -DBUILD_FAST_DDS=ON ..
 $ sudo make install
+```
+
+## Compiling Fast DDS-Gen
+Fast DDS-Gen is a code generation tool for generating C++ source code for the data types defined in an IDL file.
+
+```bash
+$ export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+$ cd DDSense/third_party/fast-dds/Fast-DDS-Gen/
+$ ./gradlew assemble
+```
+
+Generate the DDS data type for temperature using the provided `Temperature.idl` file
+
+```bash
+$ cd DDSense
+$ third_party/fast-dds/Fast-DDS-Gen/scripts/fastddsgen -d generated/ idl/temperature/Temperature.idl
+```
+
+## Build examples
+Flags for the CMake compilation:
+| Option                     | Default | Description                                 |
+|----------------------------|---------|---------------------------------------------|
+| `FAST_DDS_SAMPLE`          | OFF     | Option to build Fast DDS HelloWorld sample  |
+| `BUILD_DDSENSE`            | OFF     | Option to build DDSense publisher and subscriber sample  |
+
+```bash
+# Build Fast DDS and DDSense Sample
+$ cmake -DFAST_DDS_SAMPLE=ON -DBUILD_DDSENSE=ON ..
+$ make -j
 ```
