@@ -77,8 +77,8 @@ bool TemperaturePub::Publish() {
 
 void TemperaturePub::Run() {
   while (Publish()) {
-    std::cout << "Timestamp: " << temp_.timestamp()
-              << ", Temperature: " << temp_.temperature() << std::endl;
+    // std::cout << "Timestamp: " << temp_.timestamp()
+    //           << ", Temperature: " << temp_.temperature() << std::endl;
 
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
   }
