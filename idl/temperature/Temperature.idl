@@ -1,0 +1,5 @@
+struct Temperature
+{
+    long timestamp;
+    double temperature;
+};

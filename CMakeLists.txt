@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.10)
-project(Project VERSION 0.1.0
-                DESCRIPTION "Project description"
+project(DDSense VERSION 0.1.0
+                DESCRIPTION "DDS-based Sensor Data Pipeline"
                 LANGUAGES CXX)
 
 find_program(CCACHE_PROGRAM ccache)
@@ -12,6 +12,14 @@ endif ()
 ## Project Options
 option(BUILD_TESTING "Build tests" OFF)
 option(ENABLE_LOGGING "Enable logging module" ON)
+
+## Fast DDS
+option(BUILD_FAST_DEPENDENCIES "Build Fast DDS dependencies" OFF)
+option(BUILD_FAST_DDS "Build Fast DDS" OFF)
+option(FAST_DDS_SAMPLE "Build Fast DDS HelloWorld sample" OFF)
+
+## DDSense
+option(BUILD_DDSENSE "Build DDSense" OFF)
 
 ## Set compiler to use c++ 17 features
 set(CMAKE_CXX_STANDARD 17)
@@ -48,20 +56,65 @@ else ()
   message(STATUS "Tests will not be built")
 endif ()
 
-find_package(Threads REQUIRED)
+add_subdirectory(third_party)
 
-# add_subdirectory(third_party)
+if (BUILD_DDSENSE)
 
-## Add libraries
-add_executable(project-template
-    src/main.cpp
-    src/project_class.cpp)
-target_link_libraries(project-template PRIVATE 
-    Threads::Threads)
-target_include_directories(project-template PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include>
-    PRIVATE src)
+  # Find generated Fast DDS C++ source files
+  file(GLOB DDS_SOURCES_CXX "generated/idl/*/*.cxx")
+
+  # Define installation path for FastDDS/FastCDR
+  set(FAST_DDS_INSTALL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/fast-dds/Fast-DDS)
+  set(FAST_CDR_INSTALL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/fast-dds/Fast-CDR)
+
+  # Add the executable
+  add_executable(temperature_publisher
+      src/publisher/temperature_pub.cpp
+      ${DDS_SOURCES_CXX})
+  # Include necessary directories
+  target_include_directories(temperature_publisher
+    PUBLIC
+      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/generated>
+      $<INSTALL_INTERFACE:include>
+      $<INSTALL_INTERFACE:generated>
+      ${FAST_DDS_INSTALL_DIR}/include
+      ${FAST_CDR_INSTALL_DIR}/include
+      ${CMAKE_BINARY_DIR}/third_party/fast-dds/Fast-DDS/include
+      ${CMAKE_BINARY_DIR}/third_party/fast-dds/Fast-CDR/include
+    PRIVATE
+      src)
+  # Link against locally installed Fast DDS libraries
+  target_link_directories(temperature_publisher
+    PRIVATE
+      ${CMAKE_BINARY_DIR}/lib)
+  target_link_libraries(temperature_publisher fastdds fastcdr)
+
+
+  # Add the executable
+  add_executable(temperature_subscriber
+      src/subscriber/temperature_sub.cpp
+      ${DDS_SOURCES_CXX})
+  # Include necessary directories
+  target_include_directories(temperature_subscriber
+    PUBLIC
+      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/generated>
+      $<INSTALL_INTERFACE:include>
+      $<INSTALL_INTERFACE:generated>
+      ${FAST_DDS_INSTALL_DIR}/include
+      ${FAST_CDR_INSTALL_DIR}/include
+      ${CMAKE_BINARY_DIR}/third_party/fast-dds/Fast-DDS/include
+      ${CMAKE_BINARY_DIR}/third_party/fast-dds/Fast-CDR/include
+    PRIVATE
+      src)
+  # Link against locally installed Fast DDS libraries
+  target_link_directories(temperature_subscriber
+    PRIVATE
+      ${CMAKE_BINARY_DIR}/lib)
+  target_link_libraries(temperature_subscriber fastdds fastcdr)
+
+endif ()
 
 if (BUILD_TESTS)
   add_subdirectory(test)
